@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Homepage.css';
+import { summarizeText } from '../services/aiService';
 
 function Homepage() {
   const [notes, setNotes] = useState('');
@@ -17,11 +18,15 @@ function Homepage() {
 
     setIsLoading(true);
     
-    // Simulate AI API call (we'll replace this with real AI later)
-    setTimeout(() => {
-      setSummary('This is a placeholder summary. We will integrate the real AI API soon!');
+    try {
+      const result = await summarizeText(notes);
+      setSummary(result);
+    } catch (error) {
+      alert('Error: ' + error.message);
+      console.error(error);
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleCopy = () => {
