@@ -1,8 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
 import './Homepage.css';
 import { summarizeText } from '../services/aiService';
 
 function Homepage() {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  
   const [notes, setNotes] = useState('');
   const [summary, setSummary] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +18,19 @@ function Homepage() {
   const MAX_CHARACTERS = 5000;
 
   const handleSummarize = async () => {
+    // Check if user is logged in
+    if (!currentUser) {
+      alert('Please log in to use the summarizer!');
+      navigate('/login');
+      return;
+    }
+
+    // Check if email is verified (skip for Google sign-in users)
+    if (!currentUser.emailVerified && currentUser.providerData[0].providerId === 'password') {
+      alert('Please verify your email before using the summarizer. Check your inbox!');
+      return;
+    }
+
     if (!notes.trim()) {
       alert('Please enter some notes to summarize!');
       return;
@@ -54,11 +74,32 @@ function Homepage() {
       <header className="header">
         <div className="logo">
           <span className="logo-icon">📘</span>
-          <span className="logo-text">AI Study Helper</span>
+          <span className="logo-text">Glade</span>
         </div>
-        <button className="dark-mode-toggle" onClick={toggleDarkMode}>
-          {darkMode ? '☀️' : '🌙'}
-        </button>
+        <div className="header-actions">
+          {currentUser ? (
+            <>
+              <span className="user-email">{currentUser.email}</span>
+              <button 
+                className="logout-btn" 
+                onClick={async () => {
+                  await signOut(auth);
+                  setSummary('');
+                  setNotes('');
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <button className="login-btn" onClick={() => navigate('/login')}>
+              Login
+            </button>
+          )}
+          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
