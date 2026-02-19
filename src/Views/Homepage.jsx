@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import './Homepage.css';
 import { summarizeText } from '../services/aiService';
+import { saveSummary } from '../services/firestoreService';
 
 function Homepage() {
   const { currentUser } = useAuth();
@@ -59,9 +60,29 @@ function Homepage() {
     setSummary('');
   };
 
-  const handleSave = () => {
-    // We'll implement Firebase save later
-    alert('Save functionality coming soon!');
+  const handleSave = async () => {
+    if (!summary) {
+      alert('No summary to save!');
+      return;
+    }
+
+    if (!currentUser) {
+      alert('Please log in to save summaries!');
+      return;
+    }
+
+    try {
+      const result = await saveSummary(currentUser.uid, notes, summary);
+      
+      if (result.success) {
+        alert('✅ Summary saved successfully!');
+      } else {
+        alert('❌ Failed to save: ' + result.error);
+      }
+    } catch (error) {
+      alert('Error saving summary: ' + error.message);
+      console.error(error);
+    }
   };
 
   const toggleDarkMode = () => {
