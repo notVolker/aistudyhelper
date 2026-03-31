@@ -92,36 +92,42 @@ function Homepage() {
   return (
     <div className={`homepage ${darkMode ? 'dark-mode' : ''}`}>
       {/* Header */}
-      <header className="header">
-        <div className="logo">
-          <span className="logo-icon">📘</span>
-          <span className="logo-text">Glade</span>
-        </div>
-        <div className="header-actions">
-          {currentUser ? (
-            <>
-              <span className="user-email">{currentUser.email}</span>
-              <button 
-                className="logout-btn" 
-                onClick={async () => {
-                  await signOut(auth);
-                  setSummary('');
-                  setNotes('');
-                }}
-              >
-                Logout
+        <header className="header">
+          <div className="logo">
+            <span className="logo-icon">📘</span>
+            <span className="logo-text">Glade</span>
+          </div>
+          <div className="header-actions">
+            {currentUser ? (
+              <>
+                <button 
+                  className="history-btn" 
+                  onClick={() => navigate('/history')}
+                >
+                  📚 History
+                </button>
+                <span className="user-email">{currentUser.email}</span>
+                <button 
+                  className="logout-btn" 
+                  onClick={async () => {
+                    await signOut(auth);
+                    setSummary('');
+                    setNotes('');
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button className="login-btn" onClick={() => navigate('/login')}>
+                Login
               </button>
-            </>
-          ) : (
-            <button className="login-btn" onClick={() => navigate('/login')}>
-              Login
+            )}
+            <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+              {darkMode ? '☀️' : '🌙'}
             </button>
-          )}
-          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-        </div>
-      </header>
+          </div>
+        </header>
 
       {/* Main Content */}
       <main className="main-content">
