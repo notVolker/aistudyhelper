@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth';
 import './Homepage.css';
 import { summarizeText } from '../services/aiService';
 import { saveSummary } from '../services/firestoreService';
+import { jsPDF } from 'jspdf';
 
 function Homepage() {
   const { currentUser } = useAuth();
@@ -85,6 +86,18 @@ function Homepage() {
     }
   };
 
+  const handleDownload = () => {
+    if (!summary) {
+      alert('No summary to download!');
+      return;
+    }
+
+    const doc = new jsPDF();
+    const lines = doc.splitTextToSize(summary, 180);
+    doc.text(lines, 10, 10);
+    doc.save('summary.pdf');
+  };
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -153,20 +166,14 @@ function Homepage() {
           </div>
 
           <button 
-            className="summarize-button"
+            className={`summarize-button ${isLoading ? 'loading' : ''}`}
             onClick={handleSummarize}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <>
-                <span className="spinner"></span>
-                Processing...
-              </>
-            ) : (
-              <>
-                🤖 Summarize with AI
-              </>
-            )}
+            <span className="spinner"></span>
+            <span className="button-text">
+              {isLoading ? 'Processing...' : '🤖 Summarize with AI'}
+            </span>
           </button>
         </div>
 
@@ -180,6 +187,9 @@ function Homepage() {
             <div className="action-buttons">
               <button className="action-btn save-btn" onClick={handleSave}>
                 💾 Save
+              </button>
+              <button className="action-btn download-btn" onClick={handleDownload}>
+                📄 Download PDF
               </button>
               <button className="action-btn copy-btn" onClick={handleCopy}>
                 📋 Copy

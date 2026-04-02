@@ -189,6 +189,7 @@ body {
 
 .summarize-button {
   width: 100%;
+  min-height: 56px;
   padding: 1rem 2rem;
   font-size: 1.125rem;
   font-weight: 600;
@@ -198,10 +199,36 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+}
+
+.summarize-button .button-text {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+}
+
+.summarize-button .spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  position: absolute;
+  left: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.summarize-button.loading .spinner {
+  opacity: 1;
 }
 
 .summarize-button:hover:not(:disabled) {
