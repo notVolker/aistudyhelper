@@ -11,7 +11,7 @@ export const summarizeText = async (text) => {
         'X-Title': 'Glade'
       },
       body: JSON.stringify({
-        model: 'arcee-ai/trinity-large-preview:free',
+        model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
         messages: [
           {
             role: 'user',

@@ -7,6 +7,8 @@ import './Homepage.css';
 import { summarizeText } from '../services/aiService';
 import { saveSummary } from '../services/firestoreService';
 import { jsPDF } from 'jspdf';
+import ReactMarkdown from 'react-markdown';
+
 
 function Homepage() {
   const { currentUser } = useAuth();
@@ -182,7 +184,9 @@ function Homepage() {
           <div className="output-section">
             <h2 className="output-title">✅ Your Summary</h2>
             <div className="summary-box">
-              <p className="summary-text">{summary}</p>
+              <div className="summary-markdown">
+                <ReactMarkdown>{summary}</ReactMarkdown>
+              </div>
             </div>
             <div className="action-buttons">
               <button className="action-btn save-btn" onClick={handleSave}>
